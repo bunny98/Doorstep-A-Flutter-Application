@@ -27,13 +27,12 @@ class Shops with ChangeNotifier {
   List<ShopData> _shops;
   Geodesy geodesy = Geodesy();
 
-  void setCurrLoc(LatLng currLatLng) {
-    this.currLatLng = currLatLng;
-    notifyListeners();
-  }
-
   List<ShopData> get getNearbyShops {
     return _shops;
+  }
+
+  void setCurrLoc(double lat, double lng) {
+    this.currLatLng = LatLng(lat, lng);
   }
 
   Future fetchShops() async {
@@ -48,7 +47,7 @@ class Shops with ChangeNotifier {
           var distance =
               geodesy.distanceBetweenTwoGeoPoints(currLatLng, loc) / 1000;
           print("********DISTANCE*****" + distance.toString());
-          if (distance <= 3 && distance>0) {
+          if (distance <= 3 && distance > 0) {
             _shops.add(ShopData(
               address: doc['address'],
               latitude: double.parse(doc['latitude']),
@@ -61,6 +60,7 @@ class Shops with ChangeNotifier {
         });
       }
     });
-    print('************'+_shops.length.toString()+'*********');
+    print('************' + _shops.length.toString() + '*********');
+    notifyListeners();
   }
 }

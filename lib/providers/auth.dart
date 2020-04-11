@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geodesy/geodesy.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AuthData {
   String userId;
@@ -90,8 +90,8 @@ class Auth with ChangeNotifier {
       auth.address = null;
       auth.userName = null;
       auth.typeOfShop = null;
-      auth.latitude = null;
-      auth.longitude = null;
+      // auth.latitude = null;
+      // auth.longitude = null;
       auth.delivery = null;
     } catch (e) {}
     notifyListeners();

@@ -1,7 +1,8 @@
 import 'package:doorstep/screens/login.dart';
+import 'package:doorstep/widgets/customer_map.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:geodesy/geodesy.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../providers/auth.dart';
 import '../providers/shops.dart';
 import 'package:provider/provider.dart';
@@ -14,14 +15,14 @@ class CustomerScreen extends StatefulWidget {
 class _CustomerScreenState extends State<CustomerScreen> {
   LatLng _target;
   TextStyle _headings =
-      GoogleFonts.paprika(fontWeight: FontWeight.bold, fontSize: 18);
+      GoogleFonts.paprika(fontWeight: FontWeight.bold, fontSize: 15);
 
   void initState() {
     super.initState();
     Future.delayed(Duration.zero).then((_) {
       _target = Provider.of<Auth>(context).getCurrLatLng;
       Provider.of<Shops>(context)
-          .setCurrLoc(_target);
+          .setCurrLoc(_target.latitude, _target.longitude);
       Provider.of<Shops>(context).fetchShops();
     });
   }
@@ -30,8 +31,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          padding: EdgeInsets.only(top: 40, left: 10, right: 10),
-          decoration: BoxDecoration(color: Colors.black54),
+          padding: EdgeInsets.only(top: 40),
+          decoration: BoxDecoration(color: Colors.brown[50]),
           child: Column(
             children: <Widget>[
               Row(
@@ -62,10 +63,17 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   ]),
                 ],
               ),
-              Text(
-                'Pick a Shop',
-                style: _headings,
-              ),
+              Padding(
+                  padding: EdgeInsets.only(top: 50),
+                  child: Text(
+                    'Pick a Shop',
+                    style: _headings,
+                  )),
+              Container(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: CustomerMap(),
+              )
             ],
           )),
     );
