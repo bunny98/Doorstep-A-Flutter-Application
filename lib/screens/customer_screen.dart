@@ -1,4 +1,6 @@
+import 'package:doorstep/providers/orders.dart';
 import 'package:doorstep/screens/customer_make_order.dart';
+import 'package:doorstep/screens/customer_orders_screen.dart';
 import 'package:doorstep/screens/login.dart';
 import 'package:doorstep/widgets/customer_map.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +50,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
             typeOfShop: user.typeOfShop,
             userId: user.userId);
       });
+      Provider.of<Orders>(context).setFromUserId(user.userId);
+      Provider.of<Orders>(context).fetchCustomerOrders();
     });
   }
 
@@ -72,7 +76,10 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         Icons.shopping_cart,
                         size: 25,
                       ),
-                      onPressed: () {}),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => CustomerOrdersScreen()));
+                      }),
                   IconButton(
                       icon: Icon(
                         Icons.exit_to_app,

@@ -1,5 +1,6 @@
 import 'package:doorstep/providers/auth.dart';
 import 'package:doorstep/providers/shops.dart';
+import 'package:doorstep/screens/customer_orders_screen.dart';
 import 'package:doorstep/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,10 +110,13 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
     setState(() {
       _isLoading = true;
     });
-    Provider.of<Orders>(context).setFromUserId(_currUserId);
+    // Provider.of<Orders>(context).setFromUserId(_currUserId);
     Provider.of<Orders>(context).setToUserId(widget.shop.userId);
-    await Provider.of<Orders>(context).uploadOrder(order).then((_) {
+    await Provider.of<Orders>(context)
+        .uploadOrder(order, widget.shop.address)
+        .then((_) {
       Provider.of<Orders>(context).addNewOrder(order);
+      Provider.of<Orders>(context).addNewShopAdd(widget.shop.address);
     });
     setState(() {
       _isLoading = false;
@@ -144,7 +148,10 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
                     Icons.shopping_cart,
                     size: 25,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => CustomerOrdersScreen()));
+                  }),
               IconButton(
                   icon: Icon(
                     Icons.exit_to_app,
