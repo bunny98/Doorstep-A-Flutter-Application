@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
 import './providers/shops.dart';
+import './providers/orders.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,18 +12,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: Auth()),
-          ChangeNotifierProvider.value(value: Shops()),
-        ],
-        child: Consumer<Auth>(
-            builder: (ctx, auth, _) => Consumer<Shops>(
-                builder: (ctx, shops, _) => MaterialApp(
-                      title: 'Flutter Demo',
-                      theme: ThemeData(
-                        primarySwatch: Colors.blue,
-                      ),
-                      home: SplashScreen(),
-                    ))));
+      providers: [
+        ChangeNotifierProvider.value(value: Auth()),
+        ChangeNotifierProvider.value(value: Shops()),
+        ChangeNotifierProvider.value(value: Orders()),
+      ],
+      child: Consumer3<Auth, Shops, Orders>(
+          builder: (ctx, auth, shops, orders, _) => MaterialApp(
+                title: 'Flutter Demo',
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                ),
+                home: SplashScreen(),
+              )),
+    );
   }
 }

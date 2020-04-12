@@ -1,3 +1,4 @@
+import 'package:doorstep/screens/customer_make_order.dart';
 import 'package:doorstep/screens/login.dart';
 import 'package:doorstep/widgets/customer_map.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +121,13 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         height: MediaQuery.of(context).size.height * 0.16,
                         width: MediaQuery.of(context).size.height * 0.3,
                         child: Card(
-                          color: Colors.pink[300],
+                          color: _tappedShop.typeOfShop == 'Grocery Shop'
+                              ? Colors.greenAccent
+                              : _tappedShop.typeOfShop == 'Pharmacy'
+                                  ? Colors.yellowAccent[700]
+                                  : _tappedShop.typeOfShop == 'Hardware Shop'
+                                      ? Colors.pink[400]
+                                      : Colors.blue,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
@@ -141,7 +148,14 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                 _hasClickedMarker
                                     ? Container(
                                         child: RaisedButton.icon(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          CustomerMakesOrder(
+                                                            shop: _tappedShop,
+                                                          )));
+                                            },
                                             icon: Icon(
                                               Icons.add_shopping_cart,
                                               color: Colors.black,

@@ -32,6 +32,10 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
+  String get getUserId {
+    return auth.userId;
+  }
+
   AuthData get getAuthData {
     return auth;
   }
@@ -44,7 +48,7 @@ class Auth with ChangeNotifier {
     return auth.typeOfShop;
   }
 
-  LatLng get getCurrLatLng{
+  LatLng get getCurrLatLng {
     return LatLng(auth.latitude, auth.longitude);
   }
 
