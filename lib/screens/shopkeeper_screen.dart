@@ -2,6 +2,7 @@ import 'package:doorstep/models/requested_order.dart';
 import 'package:doorstep/providers/orders.dart';
 import 'package:doorstep/screens/customer_make_order.dart';
 import 'package:doorstep/screens/login.dart';
+import 'package:doorstep/screens/shopkeeper_order_items_screen.dart';
 import 'package:doorstep/widgets/shopkeeper_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -19,6 +20,7 @@ class ShopkeeperScreen extends StatefulWidget {
 class _ShopkeeperScreenState extends State<ShopkeeperScreen> {
   bool _buildMap = false;
   bool _hasClickedMarker = false;
+  int indexOfHouseClicked;
   List<RequestedOrder> _requesteesOrders;
   RequestedOrder _tappedHouse;
   TextStyle _headings =
@@ -28,6 +30,7 @@ class _ShopkeeperScreenState extends State<ShopkeeperScreen> {
     setState(() {
       _hasClickedMarker = true;
       _tappedHouse = _requesteesOrders[i];
+      indexOfHouseClicked = i;
     });
     print('*******' + _tappedHouse.houseNum + '********');
   }
@@ -141,7 +144,15 @@ class _ShopkeeperScreenState extends State<ShopkeeperScreen> {
                                 _hasClickedMarker
                                     ? Container(
                                         child: RaisedButton.icon(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          OrderItemsScreen(
+                                                            index:
+                                                                indexOfHouseClicked,
+                                                          )));
+                                            },
                                             icon: Icon(
                                               Icons.format_list_bulleted,
                                               color: Colors.black,

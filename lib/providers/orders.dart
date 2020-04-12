@@ -29,6 +29,10 @@ class Orders with ChangeNotifier {
     return _requestedOrders;
   }
 
+  Order getOrderAt(int i){
+    return _orders[i];
+  }
+
   void toggleShouldListen() {
     _shouldListen = !_shouldListen;
   }
