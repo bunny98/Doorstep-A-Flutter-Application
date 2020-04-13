@@ -77,8 +77,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         size: 25,
                       ),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => CustomerOrdersScreen()));
+                        Navigator.of(context)
+                            .pushNamed('/customer_orders_screen');
                       }),
                   IconButton(
                       icon: Icon(
@@ -87,9 +87,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
                       ),
                       onPressed: () async {
                         await Provider.of<Auth>(context).signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (ctx) => LoginPage()),
-                            (_) => false);
+                        Navigator.of(context)
+                            .pushNamedAndRemoveUntil('/login', (_) => false);
                       }),
                 ]),
               ],

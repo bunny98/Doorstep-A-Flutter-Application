@@ -116,8 +116,7 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
     setState(() {
       _isLoading = false;
     });
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => CustomerOrdersScreen()));
+    Navigator.of(context).popAndPushNamed('/customer_orders_screen');
   }
 
   Widget build(BuildContext context) {
@@ -142,8 +141,7 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
                     size: 25,
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => CustomerOrdersScreen()));
+                    Navigator.of(context).pushNamed('/customer_orders_screen');
                   }),
               IconButton(
                   icon: Icon(
@@ -152,9 +150,8 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
                   ),
                   onPressed: () async {
                     await Provider.of<Auth>(context).signOut();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (ctx) => LoginPage()),
-                        (_) => false);
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/login', (_) => false);
                   }),
             ]),
           ],

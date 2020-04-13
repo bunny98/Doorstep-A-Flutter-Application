@@ -78,9 +78,8 @@ class _ShopkeeperScreenState extends State<ShopkeeperScreen> {
                       ),
                       onPressed: () async {
                         await Provider.of<Auth>(context).signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (ctx) => LoginPage()),
-                            (_) => false);
+                        Navigator.of(context)
+                            .pushNamedAndRemoveUntil('/login', (_) => false);
                       }),
                 ]),
               ],

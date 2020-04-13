@@ -47,9 +47,8 @@ class _CustomerOrdersScreenState extends State<CustomerOrdersScreen> {
                         ),
                         onPressed: () async {
                           await Provider.of<Auth>(context).signOut();
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (ctx) => LoginPage()),
-                              (_) => false);
+                          Navigator.of(context)
+                              .pushNamedAndRemoveUntil('/login', (_) => false);
                         }),
                   ]),
                 ],
@@ -78,7 +77,8 @@ class _CustomerOrdersScreenState extends State<CustomerOrdersScreen> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   if (_times[i] != 'None')
                                     Text(

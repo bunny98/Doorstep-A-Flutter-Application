@@ -18,16 +18,13 @@ class _SplashScreenState extends State<SplashScreen> {
       if (val) {
         var typeOfShop = Provider.of<Auth>(context).getTypeOfShop;
         if (typeOfShop != 'None')
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (ctx) => ShopkeeperScreen()),
-              (_) => false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/shopkeeper_screen', (_) => false);
         else
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (ctx) => CustomerScreen()),
-              (_) => false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/customer_screen', (_) => false);
       } else
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (ctx) => LoginPage()), (_) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
     });
   }
 

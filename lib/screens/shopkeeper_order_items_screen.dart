@@ -94,7 +94,8 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                   .collection(_requesteesId)
                   .document(_order.orderId)
                   .updateData({
-                'time': 'Pick up at '+TimeOfDay.fromDateTime(sendDT).format(context),
+                'time': 'Pick up at ' +
+                    TimeOfDay.fromDateTime(sendDT).format(context),
               });
               await Firestore.instance
                   .collection('pickupTimes')
@@ -259,9 +260,8 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                         ),
                         onPressed: () async {
                           await Provider.of<Auth>(context).signOut();
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (ctx) => LoginPage()),
-                              (_) => false);
+                          Navigator.of(context)
+                              .pushNamedAndRemoveUntil('/login', (_) => false);
                         }),
                   ]),
                 ],
