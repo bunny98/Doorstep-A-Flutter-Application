@@ -26,10 +26,46 @@ class _ShopkeeperMapState extends State<ShopkeeperMap> {
     widget.onMarkerTapped(int.parse(markerId.value));
   }
 
-  void _setMarkers() {
-    _target = Provider.of<Auth>(context).getCurrLatLng;
-    _currLocCameraPostition = CameraPosition(target: _target, zoom: 15.5);
-    _requestedOrders = Provider.of<Orders>(context).getRequesteesOrders;
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _target = Provider.of<Auth>(context).getCurrLatLng;
+  //   _currLocCameraPostition = CameraPosition(target: _target, zoom: 15.5);
+  //   _requestedOrders = Provider.of<Orders>(context).getRequesteesOrders;
+  //   Set<Marker> _newMarkers = new Set();
+  //   if (_requestedOrders.length > 0 && _requestedOrders != null) {
+  //     print('**********REXECUTING!*********');
+  //     _newMarkers.clear();
+  //     _newMarkers.add(Marker(
+  //         markerId: MarkerId('My Location'),
+  //         position: _target,
+  //         icon: BitmapDescriptor.defaultMarkerWithHue(150),
+  //         infoWindow: InfoWindow(title: 'My Location')));
+  //     for (int i = 0; i < _requestedOrders.length; i++) {
+  //       var markerId = MarkerId('$i');
+  //       var marker = new Marker(
+  //         markerId: markerId,
+  //         position: _requestedOrders[i].loc,
+  //         infoWindow: InfoWindow(title: _requestedOrders[i].houseNum),
+  //         onTap: () => _onMarkerTapped(markerId),
+  //         icon: BitmapDescriptor.defaultMarkerWithHue(0),
+  //       );
+  //       _newMarkers.add(marker);
+  //     }
+  //   } else {
+  //     _newMarkers.clear();
+  //     _newMarkers.add(Marker(
+  //         markerId: MarkerId('My Location'),
+  //         position: _target,
+  //         icon: BitmapDescriptor.defaultMarkerWithHue(150),
+  //         infoWindow: InfoWindow(title: 'My Location')));
+  //   }
+  //   setState(() {
+  //     _markers = _newMarkers;
+  //   });
+  // }
+
+  void _setRequestedOrdersMarkers() {
     _markers = new Set();
     _markers.add(Marker(
         markerId: MarkerId('My Location'),
@@ -49,9 +85,25 @@ class _ShopkeeperMapState extends State<ShopkeeperMap> {
     }
   }
 
+  void _setCurrLocMarker() {
+    _markers = new Set();
+    _markers.add(Marker(
+        markerId: MarkerId('My Location'),
+        position: _target,
+        icon: BitmapDescriptor.defaultMarkerWithHue(150),
+        infoWindow: InfoWindow(title: 'My Location')));
+  }
+
   @override
   Widget build(BuildContext context) {
-    _setMarkers();
+    _target = Provider.of<Auth>(context).getCurrLatLng;
+    _currLocCameraPostition = CameraPosition(target: _target, zoom: 15.5);
+    _requestedOrders = Provider.of<Orders>(context).getRequesteesOrders;
+    if (_requestedOrders != null) {
+      _setRequestedOrdersMarkers();
+    } else {
+      _setCurrLocMarker();
+    }
     return Scaffold(
       body: Stack(children: [
         GoogleMap(

@@ -112,19 +112,12 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
     });
     // Provider.of<Orders>(context).setFromUserId(_currUserId);
     Provider.of<Orders>(context).setToUserId(widget.shop.userId);
-    await Provider.of<Orders>(context)
-        .uploadOrder(order, widget.shop.address)
-        .then((_) {
-      Provider.of<Orders>(context).addNewOrder(order);
-      Provider.of<Orders>(context).addNewShopAdd(widget.shop.address);
-    });
+    await Provider.of<Orders>(context).uploadOrder(order, widget.shop.address);
     setState(() {
       _isLoading = false;
     });
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => Scaffold(
-              body: Center(child: Text('My Products')),
-            )));
+        builder: (ctx) => CustomerOrdersScreen()));
   }
 
   Widget build(BuildContext context) {
@@ -150,7 +143,7 @@ class _CustomerMakesOrderState extends State<CustomerMakesOrder> {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => CustomerOrdersScreen()));
+                        builder: (ctx) => CustomerOrdersScreen()));
                   }),
               IconButton(
                   icon: Icon(

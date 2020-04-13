@@ -6,16 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../models/order.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:random_string/random_string.dart';
 
 class Orders with ChangeNotifier {
   List<Order> _orders;
   List<String> _shopAdds;
   List<String> _requesteesId;
+  List<String> _receivedTimes;
   List<RequestedOrder> _requestedOrders;
   String fromUserId;
   String toUserId;
   StreamSubscription<QuerySnapshot> receivedOrdersStream;
   bool _shouldListen = true;
+  bool _noOrderRecieved = false;
+
+  bool get getIfNoOrdersRecieved {
+    return _noOrderRecieved;
+  }
 
   List<Order> get getOrders {
     return _orders;
@@ -25,11 +32,19 @@ class Orders with ChangeNotifier {
     return _shopAdds;
   }
 
+  List<String> get getReceivedTimes{
+    return _receivedTimes;
+  }
+
   List<RequestedOrder> get getRequesteesOrders {
     return _requestedOrders;
   }
 
-  Order getOrderAt(int i){
+  String getRequesteesIdAt(int i){
+    return _requesteesId[i];
+  }
+
+  Order getOrderAt(int i) {
     return _orders[i];
   }
 
@@ -58,9 +73,11 @@ class Orders with ChangeNotifier {
   Future uploadOrder(List<OrderItem> order, String shopAdd) async {
     int i = 0;
     var docAdd = <String, dynamic>{};
+    var objId = randomAlphaNumeric(10);
     docAdd.addAll({
       'shopName': shopAdd,
       'userId': fromUserId,
+      'time': 'None',
     });
     order.forEach((or) {
       docAdd.addAll({
@@ -76,37 +93,39 @@ class Orders with ChangeNotifier {
         .collection('ordersR')
         .document(toUserId)
         .collection(toUserId)
-        .add(docAdd);
-    await Firestore.instance
+        .document(objId)
+        .setData(docAdd);
+     await Firestore.instance
         .collection('ordersS')
         .document(fromUserId)
         .collection(fromUserId)
-        .add(docAdd);
+        .document(objId)
+        .setData(docAdd);
   }
 
-  Future fetchCustomerOrders() async {
-    _orders = new List();
-    _shopAdds = new List();
-    var ref = await Firestore.instance
-        .collection('ordersS')
-        .document(fromUserId)
-        .collection(fromUserId)
-        .getDocuments();
-    ref.documents.forEach((doc) {
-      var currOrder = new List<OrderItem>();
-      doc.data.forEach((key, val) {
-        if (key == 'shopName')
-          _shopAdds.add(val);
-        else if (key != 'userId')
-          currOrder
-              .add(new OrderItem(item: val['item'], quantity: val['quantity']));
-      });
-      _orders.add(new Order(items: currOrder, orderId: doc.documentID));
-    });
-    print('********************FETCHED ORDER LENGTH ' +
-        _orders.length.toString());
-    notifyListeners();
-  }
+  // Future fetchCustomerOrders() async {
+  //   _orders = new List();
+  //   _shopAdds = new List();
+  //   var ref = await Firestore.instance
+  //       .collection('ordersS')
+  //       .document(fromUserId)
+  //       .collection(fromUserId)
+  //       .getDocuments();
+  //   ref.documents.forEach((doc) {
+  //     var currOrder = new List<OrderItem>();
+  //     doc.data.forEach((key, val) {
+  //       if (key == 'shopName')
+  //         _shopAdds.add(val);
+  //       else if (key != 'userId')
+  //         currOrder
+  //             .add(new OrderItem(item: val['item'], quantity: val['quantity']));
+  //     });
+  //     _orders.add(new Order(items: currOrder, orderId: doc.documentID));
+  //   });
+  //   print('********************FETCHED ORDER LENGTH ' +
+  //       _orders.length.toString());
+  //   notifyListeners();
+  // }
 
   bool _isAlreadyPresent(DocumentSnapshot doc) {
     bool _isPresent = false;
@@ -114,6 +133,50 @@ class Orders with ChangeNotifier {
       if (doc.documentID == or.orderId) _isPresent = true;
     });
     return _isPresent;
+  }
+
+  Future fetchCustomerOrdersSnaps() async {
+    _orders = new List();
+    _shopAdds = new List();
+    _receivedTimes = new List();
+    var snapshots = Firestore.instance
+        .collection('ordersS')
+        .document(fromUserId)
+        .collection(fromUserId)
+        .snapshots();
+    receivedOrdersStream = snapshots.listen((data) {
+      if (data.documents.length > 0) {
+        int i = -1;
+        data.documents.forEach((doc) {
+          if (!_isAlreadyPresent(doc)) {
+            var currOrder = new List<OrderItem>();
+            doc.data.forEach((key, val) {
+              if (key == 'shopName')
+                _shopAdds.add(val);
+              else if (key == 'time') {
+                _receivedTimes.add(val);
+              } else if (key != 'userId') {
+                currOrder.add(new OrderItem(
+                    item: val['item'], quantity: val['quantity']));
+              }
+            });
+            _orders.add(new Order(items: currOrder, orderId: doc.documentID));
+            print('***************' + 'ADDED My ORDER!' + _orders.length.toString()+'***************');
+            print('***************' + 'ADDED REQ TIME!' + _receivedTimes.length.toString()+'***************');
+            print('***************' + 'ADDED SHOP NAME ORDER!' + _shopAdds.length.toString()+'***************');
+            notifyListeners();
+          }
+          else{
+            i++;
+            if(doc['time']!=_receivedTimes[i]){
+              print('***************' + 'Changed Received Time!' + '***************');
+              _receivedTimes[i] = doc['time'];
+              notifyListeners();
+            }
+          }
+        });
+      }
+    });
   }
 
   Future fetchShopKeeperOrders() async {
@@ -132,38 +195,48 @@ class Orders with ChangeNotifier {
             doc.data.forEach((key, val) {
               if (key == 'userId')
                 _requesteesId.add(val);
-              else if (key != 'shopName')
+              else if (key != 'shopName' && key != 'time')
                 currOrder.add(new OrderItem(
                     item: val['item'], quantity: val['quantity']));
             });
             _orders.add(new Order(items: currOrder, orderId: doc.documentID));
             print('***************' + 'ADDED ORDER!' + '***************');
+            fetchRequesteesLatLng();
           }
         });
-        fetchRequesteesLatLng();
       }
     });
   }
 
-  Future<void> fetchRequesteesLatLng() {
+  Future<void> fetchRequesteesLatLng() async {
     List<RequestedOrder> _newRequestedOrders = new List();
-    _requesteesId.forEach((id) async {
-      var ref = await Firestore.instance.collection('users').document(id).get();
+
+    for (int i = 0; i < _requesteesId.length; i++) {
+      var ref = await Firestore.instance
+          .collection('users')
+          .document(_requesteesId[i])
+          .get();
       double lat = double.parse(ref['latitude']);
       double lng = double.parse(ref['longitude']);
       String houseNumber = ref['address'];
       _newRequestedOrders.add(
           new RequestedOrder(houseNum: houseNumber, loc: LatLng(lat, lng)));
-      print('***************' + 'ADDED LATLNG!' + '***************');
-      if (_requestedOrders == null) {
+    }
+
+    if (_requestedOrders == null && _newRequestedOrders.length > 0) {
+      print('***************' +
+          'Changed _requestOrders from null' +
+          '***************');
+      _requestedOrders = _newRequestedOrders;
+      print(_requestedOrders.length);
+      notifyListeners();
+    } else {
+      if (_requestedOrders.length != _newRequestedOrders.length) {
+        print('***************' + 'Changed _requestOrders' + '***************');
         _requestedOrders = _newRequestedOrders;
+        print(_requestedOrders.length);
         notifyListeners();
-      } else {
-        if (_requestedOrders.length != _newRequestedOrders.length) {
-          _requestedOrders = _newRequestedOrders;
-          notifyListeners();
-        }
       }
-    });
+    }
   }
 }

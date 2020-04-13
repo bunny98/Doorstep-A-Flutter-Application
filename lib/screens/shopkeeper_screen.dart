@@ -20,6 +20,7 @@ class ShopkeeperScreen extends StatefulWidget {
 class _ShopkeeperScreenState extends State<ShopkeeperScreen> {
   bool _buildMap = false;
   bool _hasClickedMarker = false;
+  bool _noOrdersReceived = false;
   int indexOfHouseClicked;
   List<RequestedOrder> _requesteesOrders;
   RequestedOrder _tappedHouse;
@@ -47,14 +48,11 @@ class _ShopkeeperScreenState extends State<ShopkeeperScreen> {
     Provider.of<Orders>(context).setFromUserId(user.userId);
     Provider.of<Orders>(context).fetchShopKeeperOrders();
     _requesteesOrders = Provider.of<Orders>(context).getRequesteesOrders;
-    if (_requesteesOrders != null) {
-      print('*******NOW DISPLAYING MAP*********');
-      setState(() {
-        _buildMap = true;
-        _tappedHouse = new RequestedOrder(
-            houseNum: user.address, loc: LatLng(user.latitude, user.longitude));
-      });
-    }
+    setState(() {
+      _buildMap = true;
+      _tappedHouse = new RequestedOrder(
+          houseNum: user.address, loc: LatLng(user.latitude, user.longitude));
+    });
   }
 
   @override

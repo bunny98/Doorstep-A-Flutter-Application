@@ -40,22 +40,24 @@ class Shops with ChangeNotifier {
     await Firestore.instance.collection('users').getDocuments().then((snap) {
       if (snap.documents.length > 0) {
         snap.documents.forEach((doc) {
-          print('**********' + doc['name'].toString());
-          var lat = double.parse(doc['latitude']);
-          var lng = double.parse(doc['longitude']);
-          var loc = LatLng(lat, lng);
-          var distance =
-              geodesy.distanceBetweenTwoGeoPoints(currLatLng, loc) / 1000;
-          print("********DISTANCE*****" + distance.toString());
-          if (distance <= 3 && distance > 0) {
-            _shops.add(ShopData(
-              address: doc['address'],
-              latitude: double.parse(doc['latitude']),
-              longitude: double.parse(doc['longitude']),
-              delivery: doc['homeDelivery'],
-              typeOfShop: doc['typeOfShop'],
-              userId: doc.documentID,
-            ));
+          if (doc['typeOfShop'] != 'None') {
+            print('**********' + doc['name'].toString());
+            var lat = double.parse(doc['latitude']);
+            var lng = double.parse(doc['longitude']);
+            var loc = LatLng(lat, lng);
+            var distance =
+                geodesy.distanceBetweenTwoGeoPoints(currLatLng, loc) / 1000;
+            print("********DISTANCE*****" + distance.toString());
+            if (distance <= 3 && distance > 0) {
+              _shops.add(ShopData(
+                address: doc['address'],
+                latitude: double.parse(doc['latitude']),
+                longitude: double.parse(doc['longitude']),
+                delivery: doc['homeDelivery'],
+                typeOfShop: doc['typeOfShop'],
+                userId: doc.documentID,
+              ));
+            }
           }
         });
       }

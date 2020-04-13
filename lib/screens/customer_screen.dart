@@ -51,7 +51,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             userId: user.userId);
       });
       Provider.of<Orders>(context).setFromUserId(user.userId);
-      Provider.of<Orders>(context).fetchCustomerOrders();
+      Provider.of<Orders>(context).fetchCustomerOrdersSnaps();
     });
   }
 

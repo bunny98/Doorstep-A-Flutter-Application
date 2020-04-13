@@ -14,10 +14,12 @@ class CustomerOrdersScreen extends StatefulWidget {
 class _CustomerOrdersScreenState extends State<CustomerOrdersScreen> {
   // List<Order> _myOrders;
   List<String> _shopAdds;
+  List<String> _times;
 
   Widget build(BuildContext context) {
     // _myOrders = Provider.of<Orders>(context).getOrders;
     _shopAdds = Provider.of<Orders>(context).getShopNames;
+    _times = Provider.of<Orders>(context).getReceivedTimes;
     return Scaffold(
         body: Container(
             padding: EdgeInsets.only(top: 30),
@@ -75,11 +77,28 @@ class _CustomerOrdersScreenState extends State<CustomerOrdersScreen> {
                               elevation: 8,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Center(
-                                  child: Text(
-                                _shopAdds[i],
-                                style: GoogleFonts.aBeeZee(fontSize: 20),
-                              )),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  if (_times[i] != 'None')
+                                    Text(
+                                      _shopAdds[i],
+                                      style: GoogleFonts.aBeeZee(fontSize: 20),
+                                    )
+                                  else
+                                    Center(
+                                      child: Text(
+                                        _shopAdds[i],
+                                        style:
+                                            GoogleFonts.aBeeZee(fontSize: 20),
+                                      ),
+                                    ),
+                                  if (_times[i] != 'None')
+                                    Text(_times[i],
+                                        style:
+                                            GoogleFonts.aBeeZee(fontSize: 20)),
+                                ],
+                              ),
                             ),
                           );
                         }))
