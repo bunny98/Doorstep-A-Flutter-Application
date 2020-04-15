@@ -9,5 +9,5 @@ To run the code on your machine, you'd need to get a [Google Maps API key](https
 /android/app/src/main/AndroidManifest.xml
 ```
 <p align="center">
-  <img width="300" height="600" src="Pictures/1.jpeg"><img src="Pictures/2.jpeg" width="300" height="600">
+  <img width="300" height="600" src="Pictures/1.jpeg">&nbsp;&nbsp;&nbsp;&nbsp;<img src="Pictures/2.jpeg" width="300" height="600">
 </p>
