@@ -4,4 +4,4 @@ apk file can be downloaded from the following link:
 ```
 https://drive.google.com/file/d/1-QuCRAoZLSE2LMjpEIw-Q927zp-IpLPV/view?usp=sharing
 ```
-![Screenshot](Pictures/1.jpeg){:height="50%" width="50%"}
+<img src="Pictures/1.jpeg" width="100" height="100">
