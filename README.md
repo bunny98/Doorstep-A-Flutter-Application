@@ -79,7 +79,7 @@ import GoogleMaps
 ```
 Opt-in to the embedded views preview by adding a boolean property to the app's ```Info.plist``` file with the key ```io.flutter.embedded_views_preview``` and the value ```YES```.
 
-## Customer Screen Map
+## Customer and Shop owner Screen Maps
 *GoogleMap* widget is used to display map on the screen. The map view can be controlled with the *GoogleMapController* that is passed to the GoogleMap's onMapCreated callback.
 ```dart
         GoogleMap(
@@ -126,3 +126,47 @@ Opt-in to the embedded views preview by adding a boolean property to the app's `
     notifyListeners();
   }
 ```
+**Note:** [*Geodecy*](https://pub.dev/packages/geodesy) plugin is used to filter out shops which are farther away.<br>
+Adding a marker in the set *_markers* is done in the following way where a *onTap* callback is used to notify the parent Widget *CustomerScreen/ShopkeeperScreen* of the marker which is tapped on, which then displays the details of that shop on a *card*:
+```dart
+ _markers.add(Marker(
+          markerId: _markerId,
+          position: LatLng(_shops[i].latitude, _shops[i].longitude),
+          infoWindow: InfoWindow(title: _shops[i].address),
+          onTap: () {
+            _onMarkerTapped(_markerId);
+          },
+          icon: BitmapDescriptor.defaultMarkerWithHue(150),
+        ));
+```
+That's how markers and tap events on a MapView can be made to work in cohesion to provide an awesome user experience.
+
+## Shop owner respones to Orders
+The Shop owner screen map shows the location of households who have placed an order to the user's shop. Clicking on the marker takes the user to a page which displays their order. After the shopkeeper is done preparing their order, he taps on *done preparing* button which then shows a *ModalBottomSheet* Widget for him to respond his customers.<br>
+It can be done one of the two ways:
+* If he delivers goods then he sends them an approx delivery time
+* If he doesn't not deliver goods, the system calculates a *pick-up* time which is atleast 10 mins apart from the last pick-up time sent. A record of last pick-up time sent by each shop is stored in *Firestore database* which is then fetched and the next pick-up time is calculated.<br><br>
+Following are the database post requests:
+```dart
+//To notify the customer
+        await Firestore.instance
+                  .collection('ordersS')
+                  .document(_requesteesId)
+                  .collection(_requesteesId)
+                  .document(_order.orderId)
+                  .updateData({
+                'time': 'Pick up at ' +
+                    TimeOfDay.fromDateTime(sendDT).format(context),
+        });
+//Storing the last pick-up time sent by this shop
+        await Firestore.instance
+                  .collection('pickupTimes')
+                  .document(_shopkeeperId)
+                  .setData({
+                'time': sendDT.millisecondsSinceEpoch,
+        });
+```
+
+**Note:** *TimeOfDay* class is used to convert the pickup time (sendDT) to a human readable form (HH:MM)
+
+That's it for this post, see you in the next one. Ciao!
