@@ -4,12 +4,12 @@ Amidst alarming COVID-19 situation and ever an increasing lockdown in India, I r
 One thing that has to be kept in mind while building an application like this is that **not every grocery/medical shop delivers goods**. So in case of the ones that don't, I've constructed a mechanism that generates *pickup-times* for customers, keeping each one of them **atleast 10 minutes apart** to avoid crowding at the shop. That's how this application avoids **social intimacy** (It's got a nice ring to it!).<br>
 
 ## Screenshots
-### Customer Sign In
+### Customer sign In
 <p align="center">
   <img width="200" height="400" src="Pictures/1.jpeg">&nbsp;&nbsp;<img src="Pictures/2.jpeg" width="200" height="400">&nbsp;&nbsp;<img src="Pictures/3.jpeg" width="200" height="400">&nbsp;&nbsp;<img src="Pictures/4.jpeg" width="200" height="400">
 </p>
 
-### Shop owner Sign In
+### Shop owner sign In
 <p align="center">
 <img src="Pictures/5.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;<img src="Pictures/6.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;<img src="Pictures/7.jpeg" width="200" height="400">
 </p>
@@ -78,3 +78,51 @@ import GoogleMaps
 }
 ```
 Opt-in to the embedded views preview by adding a boolean property to the app's ```Info.plist``` file with the key ```io.flutter.embedded_views_preview``` and the value ```YES```.
+
+## Customer Screen Map
+*GoogleMap* widget is used to display map on the screen. The map view can be controlled with the *GoogleMapController* that is passed to the GoogleMap's onMapCreated callback.
+```dart
+        GoogleMap(
+          myLocationEnabled: true,
+          compassEnabled: true,
+          mapType: MapType.normal,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          initialCameraPosition: _currLocCameraPostition,
+          markers: _markers,
+        ),
+```
+```initialCameraPosition``` is the current location of the user and ```_markers``` is a set of markers on the map which hold the latitude-longitude information of shops in a radius of 3 km from the current location of the user which is fetched from the *Firestore database* using the following function:
+```dart
+  Future fetchShops() async {
+    _shops = List();
+    await Firestore.instance.collection('users').getDocuments().then((snap) {
+      if (snap.documents.length > 0) {
+        snap.documents.forEach((doc) {
+          if (doc['typeOfShop'] != 'None') {
+            print('**********' + doc['name'].toString());
+            var lat = double.parse(doc['latitude']);
+            var lng = double.parse(doc['longitude']);
+            var loc = LatLng(lat, lng);
+            var distance =
+                geodesy.distanceBetweenTwoGeoPoints(currLatLng, loc) / 1000;
+            print("********DISTANCE*****" + distance.toString());
+            if (distance <= 3 && distance > 0) {
+              _shops.add(ShopData(
+                address: doc['address'],
+                latitude: double.parse(doc['latitude']),
+                longitude: double.parse(doc['longitude']),
+                delivery: doc['homeDelivery'],
+                typeOfShop: doc['typeOfShop'],
+                userId: doc.documentID,
+              ));
+            }
+          }
+        });
+      }
+    });
+    print('************' + _shops.length.toString() + '*********');
+    notifyListeners();
+  }
+```
