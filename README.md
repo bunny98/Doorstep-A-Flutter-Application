@@ -169,4 +169,4 @@ Following are the database post requests:
 
 **Note:** *TimeOfDay* class is used to convert the pickup time (sendDT) to a human readable form (HH:MM)
 
-That's it for this post, see you in the next one. Ciao!
+That's it for this post, for more details you can check the repo. And don't forget to star it!
