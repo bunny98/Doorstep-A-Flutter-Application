@@ -13,3 +13,62 @@ One thing that has to be kept in mind while building an application like this is
 <p align="center">
 <img src="Pictures/5.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;<img src="Pictures/6.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;<img src="Pictures/7.jpeg" width="200" height="400">
 </p>
+
+Let's dive into the technicalities now!
+## Google Maps Integration
+To use google maps in a flutter application, there are couple of steps that one should perform before coding anything in his application. <br>
+I've used [*google_maps_flutter*](https://pub.dev/packages/google_maps_flutter) plugin to integrate maps in my application. After adding *google_maps_flutter* dependency in the pubspec.yaml file of your application, follow the following steps:
+* Get an API key at [Maps Platform](https://cloud.google.com/maps-platform/)
+* Enable Google Map SDK for each platform
+  * Go to [Google Developer Console](https://console.cloud.google.com/)
+  * Choose the project that you want to enable Google Maps on
+  * Select the navigation menu and then select "Google Maps"
+  * Select "APIs" under the Google Maps menu
+  * To enable Google Maps for Android, select "Maps SDK for Android" in the "Additional APIs" section, then select "ENABLE"
+  * To enable Google Maps for iOS, select "Maps SDK for iOS" in the "Additional APIs" section, then select "ENABLE"
+  * Make sure the APIs you enabled are under the "Enabled APIs" section
+**Note:** You can find detailed steps [here](https://developers.google.com/maps/gmp-get-started).
+### Android
+Specify your API key in the application manifest ```android/app/src/main/AndroidManifest.xml``` :
+```
+<manifest ...
+  <application ...
+    <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="YOUR KEY HERE"/>
+```
+### iOS
+Specify your API key in the application delegate ```ios/Runner/AppDelegate.m``` :
+```
+#include "AppDelegate.h"
+#include "GeneratedPluginRegistrant.h"
+#import "GoogleMaps/GoogleMaps.h"
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [GMSServices provideAPIKey:@"YOUR KEY HERE"];
+  [GeneratedPluginRegistrant registerWithRegistry:self];
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+@end
+```
+Or in your swift code, specify your API key in the application delegate ```ios/Runner/AppDelegate.swift``` :
+```
+import UIKit
+import Flutter
+import GoogleMaps
+
+@UIApplicationMain
+@objc class AppDelegate: FlutterAppDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    GMSServices.provideAPIKey("YOUR KEY HERE")
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+}
+```
+Opt-in to the embedded views preview by adding a boolean property to the app's ```Info.plist``` file with the key ```io.flutter.embedded_views_preview``` and the value ```YES```.
