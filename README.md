@@ -18,15 +18,20 @@ Let's dive into the technicalities now!
 ## Google Maps Integration
 To use google maps in a flutter application, there are couple of steps that one should perform before coding anything in his application. <br>
 I've used [*google_maps_flutter*](https://pub.dev/packages/google_maps_flutter) plugin to integrate maps in my application. After adding *google_maps_flutter* dependency in the pubspec.yaml file of your application, follow the following steps:
-* Get an API key at [Maps Platform](https://cloud.google.com/maps-platform/)
-* Enable Google Map SDK for each platform
-  * Go to [Google Developer Console](https://console.cloud.google.com/)
-  * Choose the project that you want to enable Google Maps on
-  * Select the navigation menu and then select "Google Maps"
-  * Select "APIs" under the Google Maps menu
-  * To enable Google Maps for Android, select "Maps SDK for Android" in the "Additional APIs" section, then select "ENABLE"
-  * To enable Google Maps for iOS, select "Maps SDK for iOS" in the "Additional APIs" section, then select "ENABLE"
-  * Make sure the APIs you enabled are under the "Enabled APIs" section
+<ul> 
+  <li>Get an API key at [Maps Platform](https://cloud.google.com/maps-platform/)</li>
+  <li>Enable Google Map SDK for each platform
+    <ul>
+      <li>Go to [Google Developer Console](https://console.cloud.google.com/)</li>
+      <li>Choose the project that you want to enable Google Maps on</li>
+      <li>Select the navigation menu and then select "Google Maps"</li>
+      <li>Select "APIs" under the Google Maps menu</li>
+      <li>To enable Google Maps for Android, select "Maps SDK for Android" in the "Additional APIs" section, then select "ENABLE"</li>
+      <li>To enable Google Maps for iOS, select "Maps SDK for iOS" in the "Additional APIs" section, then select "ENABLE"</li>
+      <li>Make sure the APIs you enabled are under the "Enabled APIs" section</li>
+    </ul>
+  </li>
+</ul>
 **Note:** You can find detailed steps [here](https://developers.google.com/maps/gmp-get-started).
 ### Android
 Specify your API key in the application manifest ```android/app/src/main/AndroidManifest.xml``` :
