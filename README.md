@@ -22,7 +22,7 @@ I've used [*google_maps_flutter*](https://pub.dev/packages/google_maps_flutter) 
   <li>Get an API key at [Maps Platform](https://cloud.google.com/maps-platform/)</li>
   <li>Enable Google Map SDK for each platform
     <ul>
-      <li>Go to [Google Developer Console](https://console.cloud.google.com/)</li>
+      <li>Go to https://console.cloud.google.com/</li>
       <li>Choose the project that you want to enable Google Maps on</li>
       <li>Select the navigation menu and then select "Google Maps"</li>
       <li>Select "APIs" under the Google Maps menu</li>
@@ -33,6 +33,7 @@ I've used [*google_maps_flutter*](https://pub.dev/packages/google_maps_flutter) 
   </li>
 </ul>
 **Note:** You can find detailed steps [here](https://developers.google.com/maps/gmp-get-started).
+
 ### Android
 Specify your API key in the application manifest ```android/app/src/main/AndroidManifest.xml``` :
 ```
